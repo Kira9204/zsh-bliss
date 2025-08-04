@@ -1,0 +1,19 @@
+# https://editorconfig.org
+# https://man.archlinux.org/man/extra/shfmt/shfmt.1.en
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+[*.{sh,zsh-theme}]
+indent_style = space
+indent_size = 2
+shell_variant      = bash
+binary_next_line   = true
+switch_case_indent = true
+space_redirects    = true
+keep_padding       = false
+function_next_line = false
+[/oh-my-zsh/custom/plugins/**]
+ignore = true
+

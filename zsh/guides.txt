@@ -1,0 +1,2 @@
+https://timjames.dev/blog/overhaul-your-terminal-with-zsh-plugins-more-3oag
+https://aamnah.com/notes/sysadmin/zsh-custom-theme-ultimate-guide/

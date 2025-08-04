@@ -1,0 +1,21 @@
+[core]
+    autocrlf = input
+    fscache = true
+    symlinks = true
+    editor = nvim
+#    editor = code --wait
+[user]
+    name = name
+    email = email@example.com
+[color]
+    ui = true
+[pull]
+    rebase = true
+[init]
+    defaultBranch = main
+
+[difftool "vscode"]
+  cmd = code --wait --diff $LOCAL $REMOTE
+
+[mergetool "vscode"]
+  cmd = code --wait $MERGED
