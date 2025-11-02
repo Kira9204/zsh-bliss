@@ -135,10 +135,10 @@ segment_java() {
   fi
 
   # Check for Java project files or JAR files
-  local has_jar_files=false
+  local matched_file=false
   # Use find to avoid glob expansion issues
   if [[ $(find . -maxdepth 1 -name "*.jar" -type f 2> /dev/null | wc -l) -gt 0 ]]; then
-    has_jar_files=true
+    matched_file=true
   fi
 
   if [[ -f pom.xml || -f build.gradle || -f build.gradle.kts || -f gradle.properties || -f settings.gradle || $has_jar_files == true ]]; then
@@ -153,16 +153,23 @@ segment_node() {
   fi
 
   # Check for JavaScript/TypeScript project files
-  local has_js_ts_files=false
-  # Use find to avoid glob expansion issues - search for both .js and .ts files
-  if [[ $(find . -maxdepth 1 \( -name "*.js" -o -name "*.ts" \) -type f 2> /dev/null | wc -l) -gt 0 ]]; then
-    has_js_ts_files=true
+  local matched_file=false
+
+  if [[ $(find . -maxdepth 1 -name "*.js" -type f 2> /dev/null | wc -l) -gt 0 ]]; then
+    matched_file=true
+  fi
+  if [[ $(find . -maxdepth 1 -name "*.ts" -type f 2> /dev/null | wc -l) -gt 0 ]]; then
+    matched_file=true
+  fi
+  if [[ $(find . -maxdepth 1 -name "package.json" -type f 2> /dev/null | wc -l) -gt 0 ]]; then
+    matched_file=true
   fi
 
-  if [[ -f package.json || $has_js_ts_files == true ]]; then
-    local version=$(node -v)
+  if [[ -f package.json || $matched_file == true ]]; then
+    local version=$(node -v 2>&1 | awk -F 'v' '{print $2}')
     echo "%K{$COLOR_BACKGROUND_NODE} NODE $version %k"
   fi
+
 }
 
 segment_programming_language() {

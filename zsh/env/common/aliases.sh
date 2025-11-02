@@ -9,20 +9,44 @@ if command -v lsd > /dev/null 2>&1; then
   fi
 
   alias ls="lsd --group-dirs=first --color=always --icon $icons"
+
+else
+  alias ls="ls --color=auto"
 fi
 
 if command -v bat > /dev/null 2>&1; then
   alias cat="bat --paging=never --style=plain"
 fi
 
-alias sync="rsync -a --progress"
+alias .="ls"
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+
+# List with details
+alias ll="ls -al"
+# List last access time
+alias lt="ls -lt"
+
+alias sync="rsync -ah --info=progress2"
 alias l="ls"
+alias s="ls"
 alias ll="ls -l"
+alias lll="ls -Al"
+alias all="ls -Al"
+alias sl="ls"
+alias cpr="cp -r"
+alias rmr="rm -rf"
 
 # Print the current working directory every time we change it
 cd() {
   builtin cd "$@" && ls
 }
+
+mkd() {
+  mkdir -p "$@" && builtin cd "$@"
+}
+
 # Reload the shell configuration
 reload() {
   source ~/.zshrc
@@ -37,6 +61,10 @@ ssh-copy-key() {
 }
 
 # Git related aliases
+status() {
+  git status
+}
+
 pull() {
   git pull --rebase
 }
@@ -58,6 +86,15 @@ rebase() {
 }
 reset-commit() {
   git commit --amend --reset-author --no-edit
+}
+
+grm() {
+  if [ -z $1 ]; then
+    echo "No argument provided" >&2
+    return 1
+  fi
+  echo "Removing $1 from the git cache. Make sure this path is in your .gitignore"
+  git rm --cached "$1"
 }
 
 # Clean up garbage files

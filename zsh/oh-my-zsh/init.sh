@@ -71,6 +71,12 @@ zstyle ':completion:*' insecure yes
 plugins=(zsh-autosuggestions zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
 
+omz-install() {
+  echo "Installing oh-my-zsh plugins..."
+  git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+}
+
 # Updates oh-my-zsh and custom plugins
 omz-update() {
   echo "Updating oh-my-zsh..."
@@ -79,3 +85,8 @@ omz-update() {
   cd "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" && echo "Updating zsh-syntax-highlighting..." && git reset --hard HEAD && git pull
   cd "$ZSH_CUSTOM/plugins/zsh-autosuggestions" && echo "Updating zsh-autosuggestions..." && git reset --hard HEAD && git pull
 }
+
+if [ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ] && [ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]; then
+  echo "Neither zsh-autosuggestions nor zsh-syntax-highlighting is installed in $ZSH_CUSTOM/plugins"
+  echo 'Install these manually, or run "omz-install" to automatically install them'
+fi
