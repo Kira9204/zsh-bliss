@@ -8,7 +8,9 @@ Follow these steps in order to use this zsh environment inside of windows:
 4. `pacman -S zsh`.
 5. Install [Oh-my-zsh](https://ohmyz.sh/).
 6. `cp -r zsh ~/.zsh`.
-7. Follow the instructions when the shell starts on how to install `zsh-autosuggestions` and `zsh-syntax-highlighting`.
+7. `cp ../../zshrc ~/.zshrc` 
+8. Follow the instructions when the shell starts on how to install `zsh-autosuggestions` and `zsh-syntax-highlighting`.
+9. To set zsh as your default shell: `cp bashrc ~/.bashrc`
 
 For additional packages, visit the [msys package repository](https://packages.msys2.org/base).
 When installing packages, always use the `MINGW64` version of the package!

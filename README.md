@@ -13,13 +13,11 @@ Includes configuration for tools like VIM and Neovim too.
 - `nvim` (Set as default editor)
 
 Copy the files
-- `cp -r ./zsh ~/.zsh`
-- `cp -r ./nvim ~/.config`
-- `cp ./etc/vimrc /etc/vimrc`
-- `cp ./gitconfig ~/.gitconfig`
-
-Include the configuration in your `~/.zshrc` file with
-`source ~/.zsh/init.sh`
+- `cp zshrc ~/.zshrc`
+- `cp -r zsh ~/.zsh`
+- `cp -r nvim ~/.config`
+- `cp etc/vimrc /etc/vimrc`
+- `cp gitconfig ~/.gitconfig`
 
 Screenshots:  
 
