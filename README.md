@@ -1,5 +1,5 @@
 # zsh-bliss
-Linux+Mac custom configurations and themes i use on my work and private machines.  
+Linux+Mac+Windows custom configurations and themes i use on my work and private machines.  
 Lots of useful aliases for developers are included!  
 Includes configuration for tools like VIM and Neovim too.
 
