@@ -172,3 +172,8 @@ st() {
     stat -f "%Sp %Lp %N" "$@"
   fi
 }
+
+nvim-update() {
+  nvim --headless "+Lazy! sync" +qa
+}
+
