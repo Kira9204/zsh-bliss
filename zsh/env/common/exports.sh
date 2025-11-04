@@ -25,3 +25,8 @@ if [[ -d "$HOME/.sdkman" ]]; then
   fi
   export JAVA_HOME="$SDKMAN_DIR/candidates/java/current"
 fi
+
+# Load ACME.sh if it exists
+if [[ -d "$HOME/.acme.sh" ]]; then
+  . "/home/erik/.acme.sh/acme.sh.env"
+fi
