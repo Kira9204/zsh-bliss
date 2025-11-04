@@ -27,6 +27,6 @@ if [[ -d "$HOME/.sdkman" ]]; then
 fi
 
 # Load ACME.sh if it exists
-if [[ -d "$HOME/.acme.sh" ]]; then
-  . "/home/erik/.acme.sh/acme.sh.env"
+if [[ -d "$HOME/.acme.sh" && -s "$HOME/.acme.sh/acme.sh.env" ]]; then
+  . "$HOME/.acme.sh/acme.sh.env"
 fi
