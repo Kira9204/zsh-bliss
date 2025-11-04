@@ -64,7 +64,9 @@ ssh-copy-key() {
 status() {
   git status
 }
-
+add() {
+  git add "$1"
+}
 pull() {
   git pull --rebase
 }
@@ -176,4 +178,3 @@ st() {
 nvim-update() {
   nvim --headless "+Lazy! sync" +qa
 }
-
