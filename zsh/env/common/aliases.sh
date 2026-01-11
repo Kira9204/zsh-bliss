@@ -1,15 +1,12 @@
 if command -v lsd > /dev/null 2>&1; then
-  local icons
 
-  # If we are not inside an SSH or physical terminal session
-  if [[ $(tty) != /dev/tty[1-6] ]]; then
-    icons="always"
-  else
+  local icons="always"
+  # If we are inside an SSH or physical terminal session
+  if [[ $(tty) == /dev/tty[1-6] ]]; then
     icons="never"
   fi
 
   alias ls="lsd --group-dirs=first --color=always --icon $icons"
-
 else
   alias ls="ls --color=auto"
 fi
@@ -18,7 +15,6 @@ if command -v bat > /dev/null 2>&1; then
   alias cat="bat --paging=never --style=plain"
 fi
 
-alias .="ls"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -65,7 +61,7 @@ status() {
   git status
 }
 add() {
-  git add "$1"
+  git add -v "$1"
 }
 pull() {
   git pull --rebase
