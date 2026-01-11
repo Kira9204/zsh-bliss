@@ -22,7 +22,7 @@ vim.opt.expandtab = true
 vim.opt.smarttab = true
 
 vim.opt.undofile = true
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+vim.opt.undodir = os.getenv("HOME") .. "/.local/share/nvim/undo//"
 vim.opt.swapfile = false
 vim.opt.backup = false
 
