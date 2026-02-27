@@ -1,0 +1,3 @@
+timeout() {
+  sleep "$1"
+}

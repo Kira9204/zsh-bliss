@@ -10,11 +10,6 @@ if [[ -d "$HOME/.nvm" ]]; then
   if [[ -s "$NVM_DIR/nvm.sh" ]]; then
     . "$NVM_DIR/nvm.sh"
   fi
-
-  # Load NVM bash completion if the script exists
-  if [[ -s "$NVM_DIR/bash_completion" ]]; then
-    . "$NVM_DIR/bash_completion"
-  fi
 fi
 
 # Load SDKMAN if it exists
@@ -24,9 +19,4 @@ if [[ -d "$HOME/.sdkman" ]]; then
     source "$HOME/.sdkman/bin/sdkman-init.sh"
   fi
   export JAVA_HOME="$SDKMAN_DIR/candidates/java/current"
-fi
-
-# Load ACME.sh if it exists
-if [[ -d "$HOME/.acme.sh" && -s "$HOME/.acme.sh/acme.sh.env" ]]; then
-  . "$HOME/.acme.sh/acme.sh.env"
 fi

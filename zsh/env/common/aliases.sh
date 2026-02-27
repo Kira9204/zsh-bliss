@@ -174,3 +174,22 @@ st() {
 nvim-update() {
   nvim --headless "+Lazy! sync" +qa
 }
+
+bliss-update() {
+  echo "Are you in the zsh-bliss repository?"
+  echo "This will pull the latest changes from the remote repository."
+  read -r response_repository
+  if [[ "$response_repository" =~ ^[Yy]$ ]]; then
+    git pull --rebase
+    echo "Copy zsh directory to $HOME/.zsh? (y/n)"
+    read -r response_copy
+    if [[ "$response_copy" =~ ^[Yy]$ ]]; then
+      cp -r zsh "$HOME/.zsh"
+      echo "Done. Please restart your terminal to apply the latest changes."
+    else
+      echo "Aborted."
+    fi
+  else
+    echo "Aborted."
+  fi
+}
