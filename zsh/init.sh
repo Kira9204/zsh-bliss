@@ -6,7 +6,7 @@ source "$HOME/.zsh/oh-my-zsh/init.sh"
 source "$HOME/.zsh/normalize.sh"
 source "$HOME/.zsh/bliss-update.sh"
 
-local INIT_MAC="$HOME/.zsh/env/home/work/mac/init.sh"
+local INIT_MAC="$HOME/.zsh/env/work/mac/init.sh"
 local INIT_LINUX="$HOME/.zsh/env/home/linux/init.sh"
 local INIT_LINUX_MSYS="$HOME/.zsh/env/home/windows/init.sh"
 
