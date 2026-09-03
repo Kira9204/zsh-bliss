@@ -1,7 +1,12 @@
 # By: Erik Welander (erik.welander@hotmail.com)
 setopt PROMPT_SUBST
 
-# args= ; for code in {000..255} ; { args+=("$code %K{$code}%F{$code}XX%f%k") } ; print -cP -- $args
+colors() {
+for color in {0..255}; do
+  print -Pn "%K{$color}      %k ${(l:3:: :)color}  "
+  (( (color + 1) % 6 == 0 )) && print
+done
+}
 # %F{color} sets foreground color
 # %K{color} sets background color
 # %f resets foreground color to default
@@ -20,7 +25,7 @@ local COLOR_BACKGROUND_EXIT_CODE_FAILURE="198"
 local COLOR_BACKGROUND_BRANCH_SYNCED="028"
 local COLOR_BACKGROUND_BRANCH_NOT_SYNCED="136"
 local COLOR_BACKGROUND_JAVA="130"
-local COLOR_BACKGROUND_NODE="136"
+local COLOR_BACKGROUND_NODE="003"
 
 # Save the last command execution time
 local last_cmd_time=""
@@ -194,5 +199,12 @@ segment_last_char() {
     echo "\$"
   fi
 }
-NL=$'\n'
-export PROMPT='%f%k${NL}${NL}%F{$COLOR_FOREGROUND_PRIMARY}$(segment_host)$(segment_path)$(segment_git)$(segment_programming_language)$(segment_time)$(segment_exit) %f%k ${NL}%F{$COLOR_FOREGROUND_PRIMARY}$(segment_last_char)%f%k '
+
+# Erases to end of line using the currently active SGR (used right after a
+# %k reset) so any leftover background color painted by the terminal when a
+# long segment (e.g. git branch name) wraps onto a new line gets repainted
+# with the default background instead of bleeding through.
+local ERASE_TO_EOL=$'\e[K'
+local NL=$'\n'
+
+export PROMPT='%f%k%{${ERASE_TO_EOL}%}${NL}${NL}%F{$COLOR_FOREGROUND_PRIMARY}$(segment_host)$(segment_path)$(segment_git)$(segment_programming_language)$(segment_time)$(segment_exit) %f%k%{${ERASE_TO_EOL}%} ${NL}%F{$COLOR_FOREGROUND_PRIMARY}$(segment_last_char)%f%k%{${ERASE_TO_EOL}%} '
