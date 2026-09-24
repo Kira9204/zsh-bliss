@@ -3,6 +3,11 @@ export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME="kira"
 
+# Skip all aliases, in lib files and enabled plugins
+zstyle ':omz:*' aliases no
+# Skip only the aliases from the git plugin
+#zstyle ':omz:plugins:git' aliases no
+
 # Uncomment the following line to use case-sensitive completion.
 CASE_SENSITIVE="true"
 
@@ -69,6 +74,12 @@ zstyle ':completion:*' insecure yes
 
 #plugins=(zsh-autosuggestions zsh-syntax-highlighting gh mvn sdk nvm npm yarn docker docker-compose vscode jsontools cp)
 plugins=(zsh-autosuggestions zsh-syntax-highlighting)
+
+# Skip all aliases, in lib files and enabled plugins
+zstyle ':omz:*' aliases no
+# Skip only the aliases from the git plugin
+zstyle ':omz:plugins:git' aliases no
+
 source $ZSH/oh-my-zsh.sh
 
 omz-install() {

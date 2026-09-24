@@ -24,11 +24,11 @@ alias ll="ls -al"
 # List last access time
 alias lt="ls -lt"
 
-alias sync="rsync -ah --info=progress2"
+alias sy="rsync -ah --info=progress2"
 alias l="ls"
 alias s="ls"
 alias ll="ls -l"
-alias lll="ls -Al"
+alias la="ls -Al"
 alias all="ls -Al"
 alias sl="ls"
 alias cpr="cp -r"
@@ -39,7 +39,7 @@ cd() {
   builtin cd "$@" && ls
 }
 
-mkd() {
+mk() {
   mkdir -p "$@" && builtin cd "$@"
 }
 
@@ -57,21 +57,27 @@ ssh-copy-key() {
 }
 
 # Git related aliases
+checkout() {
+  git checkout "$@"
+}
 status() {
   git status
 }
 add() {
-  git add -v "$1"
+  git add -v "$@"
 }
 pull() {
   git pull --rebase
 }
-log() {
-  git log --graph --oneline --decorate --all
+push() {
+  git push
 }
-alias push="git push"
-alias pushh="git push -f"
-alias commit="git commit -m"
+pushh() {
+  git push -f
+}
+commit() {
+  git commit -m "$1"
+}
 reset() {
   if [ -z $1 ]; then
     git reset --hard HEAD
@@ -80,10 +86,124 @@ reset() {
   fi
 }
 rebase() {
-  git rebase -i HEAD~$1
+  local target="${1:-}"
+
+  if [[ -z "$target" ]]; then
+    echo "Usage: rebase <number|commit>" >&2
+    return 1
+  fi
+
+  if [[ "$target" =~ ^[0-9]+$ ]]; then
+    git rebase -i "HEAD~$target"
+  else
+    git rebase -i "$target"
+  fi
 }
+
 reset-commit() {
   git commit --amend --reset-author --no-edit
+}
+
+# Build a 256-color ANSI escape sequence for the given foreground/background
+# color numbers (either may be blank to omit that part).
+_ansi_256_color() {
+  local fg="$1" bg="$2"
+  if [[ -z "$fg" && -z "$bg" ]]; then
+    return
+  elif [[ -z "$bg" ]]; then
+    printf '\033[38;5;%sm' "$fg"
+  elif [[ -z "$fg" ]]; then
+    printf '\033[48;5;%sm' "$bg"
+  else
+    printf '\033[38;5;%s;48;5;%sm' "$fg" "$bg"
+  fi
+}
+
+log() {
+  local command="${1:-}"
+  local branch_format
+  local -a git_log_args
+
+  case "$command" in
+    "")
+      git_log_args=(-20)
+      branch_format="$(git branch --show-current)"
+      ;;
+    a | all)
+      git_log_args=(-20 --all --source)
+      branch_format="%S"
+      ;;
+    *)
+      echo "Usage:"
+      echo "  log       - Displays the latest 20 commits on your current branch"
+      echo "  log a|all - Displays the latest 20 commits across all refs"
+      return 1
+      ;;
+  esac
+
+  local reset=$'\033[0m'
+  local line_number_color="$(_ansi_256_color 6 "")"
+  local commit_hash_color="$(_ansi_256_color "" "")"
+  local branch_color="$(_ansi_256_color 2 "")"
+  local message_color="$(_ansi_256_color 3 "")"
+
+  # awk just wires the pre-built colors around each tab-separated field;
+  # all the color-code math happens above, in bash.
+  git log "${git_log_args[@]}" --pretty=format:"%h%x09${branch_format}%x09%s" \
+    | awk -F '\t' \
+      -v reset="$reset" \
+      -v line_number_color="$line_number_color" \
+      -v commit_hash_color="$commit_hash_color" \
+      -v branch_color="$branch_color" \
+      -v message_color="$message_color" '
+    {
+        sub(/^refs\/heads\//, "", $2)
+        sub(/^refs\/remotes\//, "", $2)
+        printf "%s%2d%s %s%s%s %s%s%s %s%s%s\n",
+          line_number_color, NR, reset,
+          commit_hash_color, $1, reset,
+          branch_color, $2, reset,
+          message_color, $3, reset
+    }'
+}
+
+stash() {
+  local command="${1:-}"
+  shift
+  case "$command" in
+
+    "")
+      git stash list
+      ;;
+
+    add)
+      if [[ $# -eq 0 ]]; then
+        echo "Usage: stash add \"name\""
+        return 1
+      fi
+
+      git stash push -m "$*"
+      ;;
+
+    pop)
+      local target="${1:-0}"
+      git stash pop "stash@{$target}"
+      ;;
+
+    drop)
+      local target="${1:-0}"
+      git stash drop "stash@{$target}"
+      ;;
+
+    *)
+      echo "Usage:"
+      echo "  stash               - Lists the current stashes"
+      echo "  stash add \"name\"  - Adds the current stash with a custom name"
+      echo "  stash pop [<number>] - Pops the top (0) stash, or the stash number if provided"
+      echo "  stash drop [<number>] - Drops the top (0) stash, or the stash number if provided"
+      return 1
+      ;;
+  esac
 }
 
 grm() {
@@ -173,23 +293,4 @@ st() {
 
 nvim-update() {
   nvim --headless "+Lazy! sync" +qa
-}
-
-bliss-update() {
-  echo "Are you in the zsh-bliss repository?"
-  echo "This will pull the latest changes from the remote repository."
-  read -r response_repository
-  if [[ "$response_repository" =~ ^[Yy]$ ]]; then
-    git pull --rebase
-    echo "Copy zsh directory to $HOME/.zsh? (y/n)"
-    read -r response_copy
-    if [[ "$response_copy" =~ ^[Yy]$ ]]; then
-      cp -r zsh "$HOME/.zsh"
-      echo "Done. Please restart your terminal to apply the latest changes."
-    else
-      echo "Aborted."
-    fi
-  else
-    echo "Aborted."
-  fi
 }

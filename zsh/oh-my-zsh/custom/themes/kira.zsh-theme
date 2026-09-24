@@ -1,7 +1,7 @@
 # By: Erik Welander (erik.welander@hotmail.com)
 setopt PROMPT_SUBST
 
-colors() {
+list-colors() {
 for color in {0..255}; do
   print -Pn "%K{$color}      %k ${(l:3:: :)color}  "
   (( (color + 1) % 6 == 0 )) && print
