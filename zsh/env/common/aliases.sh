@@ -172,7 +172,7 @@ stash() {
   shift
   case "$command" in
 
-    "")
+    list)
       git stash list
       ;;
 
@@ -197,9 +197,9 @@ stash() {
 
     *)
       echo "Usage:"
-      echo "  stash               - Lists the current stashes"
-      echo "  stash add \"name\"  - Adds the current stash with a custom name"
-      echo "  stash pop [<number>] - Pops the top (0) stash, or the stash number if provided"
+      echo "  stash list            - Lists the current stashes"
+      echo "  stash add \"name\"    - Adds the current stash with a custom name"
+      echo "  stash pop [<number>]  - Pops the top (0) stash, or the stash number if provided"
       echo "  stash drop [<number>] - Drops the top (0) stash, or the stash number if provided"
       return 1
       ;;
@@ -282,15 +282,73 @@ perm() {
 
 # Cross platform stat command
 st() {
-  if stat --version > /dev/null 2>&1; then
-    # GNU stat (Linux)
-    stat -c "%A %a %n" "$@"
-  else
-    # BSD stat (macOS)
-    stat -f "%Sp %Lp %N" "$@"
-  fi
+  case "$(uname -s)" in
+    Linux)
+      stat -c "%A %a %n" "$@"
+      ;;
+    Darwin | FreeBSD | OpenBSD | NetBSD | DragonFly)
+      stat -f "%Sp %Lp %N" "$@"
+      ;;
+    *)
+      echo "st: unsupported operating system" >&2
+      return 1
+      ;;
+  esac
 }
 
 nvim-update() {
   nvim --headless "+Lazy! sync" +qa
+}
+
+system-update() {
+  case "$(uname -s)" in
+    Linux)
+      local ID=""
+      if [[ -r /etc/os-release ]]; then
+        ID=$(
+          . /etc/os-release
+          # Arch derivatives identify their base distribution in ID_LIKE.
+          if [[ " ${ID_LIKE:-} " == *" arch "* ]]; then
+            printf '%s' arch
+          else
+            printf '%s' "$ID"
+          fi
+        )
+      fi
+
+      case "$ID" in
+        arch)
+          echo "Updating system..."
+          sudo pacman -Syyu
+          ;;
+        fedora)
+          echo "Updating user Flatpaks..."
+          flatpak update --user -y
+
+          echo "Updating system Flatpaks..."
+          sudo flatpak update --system -y
+
+          echo "Updating system..."
+          sudo dnf update --refresh
+          ;;
+        debian | ubuntu)
+          echo "Updating system..."
+          sudo apt update && sudo apt dist-upgrade
+          ;;
+      esac
+      ;;
+    Darwin)
+      if command -v nvim > /dev/null 2>&1; then
+        echo "Updating homebrew..."
+        brew upgrade
+      else
+        echo "Homebrew not installed. Aborting."
+      fi
+      ;;
+  esac
+
+  if command -v nvim > /dev/null 2>&1; then
+    echo "Updating Neovim plugins..."
+    nvim-update
+  fi
 }
