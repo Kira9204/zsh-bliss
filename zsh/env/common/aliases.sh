@@ -15,6 +15,10 @@ if command -v bat > /dev/null 2>&1; then
   alias cat="bat --paging=never --style=plain"
 fi
 
+blk() {
+  lsblk -o NAME,SIZE,FSTYPE,TYPE,UUID,MODEL,SERIAL
+}
+
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
