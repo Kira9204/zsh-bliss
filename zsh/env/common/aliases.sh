@@ -356,3 +356,10 @@ system-update() {
     nvim-update
   fi
 }
+
+kde-windows() {
+  qdbus-qt6 org.kde.KWin /KWin org.kde.KWin.showDebugConsole
+}
+kde-window-query() {
+  qdbus-qt6 org.kde.KWin /KWin queryWindowInfo
+}
